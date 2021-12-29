@@ -10,11 +10,19 @@
 #include <dt-bindings/zmk/bt.h>
 
 #define DVORAK 0
-#define GAMING 1
+#define QWERTY 1
 #define LOWER 2
 #define RAISE 3
+#define ADJUST 4
 
 / {
+        conditional_layers {
+                compatible = "zmk,conditional-layers";
+                tri_layer {
+                        if-layers = <2 3>;
+                        then-layer = <4>;
+                };
+        };
         behaviors {
                 hm: homerow_mods {
                         compatible = "zmk,behavior-hold-tap";
@@ -35,58 +43,97 @@
                 compatible = "zmk,keymap";
 
                 default_layer {
+// +------+----+----+----+----+----+             +----+----+----+----+----+------+
+// | TAB  | '  | ,  | .  | p  | y  |             | f  | g  | c  | r  | l  |  =   |
+// +------+----+alt-+cmd-+shft+----+             +----+shft+cmd-+alt-+----+------+
+// | ESC  | a  | o  | e  | u  | i  |             | d  | h  | t  | n  | s  |  -   |
+// +------+ctl-+----+----+----+----+             +----+----+----+----+ctl-+------+
+// |  \   | ;  | q  | j  | k  | x  |             | b  | m  | w  | v  | z  |  /   |
+// +------+----+----+----+----+----+----+   +----+----+----+----+----+----+------+
+//                       | `  |LWR |SPC |   |ENT |RSE |BSPC|
+//                       +----+----+----+   +----+----+----+
                         label = "dvorak";
-// -----------------------------------------------------------------------------------------
-// |  TAB |  '  |  ,  |  .  |  p  |  y  |   |  f  |  g   |  c  |  r  |  l  |  =   |
-// | CTRL |  a  |  o  |  e  |  u  |  i  |   |  d  |  h   |  t  |  n  |  s  |  -   |
-// |   \  |  ;  |  q  |  j  |  k  |  x  |   |  b  |  m   |  w  |  v  |  z  |  /   |
-//                    |  `  | LWR | SPC |   | ENT | RSE  | BKSP |
                         bindings = <
-   &kp TAB   &kp SQT        &kp COMMA   &kp DOT     &kp P        &kp Y   &kp F &kp G         &kp C       &kp R       &kp L        &kp EQUAL
-   &kp ESC   &kp A          &hm LALT O  &hm LGUI E  &hm LSHIFT U &kp I   &kp D &hm RSHIFT H  &hm RGUI T  &hm RALT N  &kp S        &kp MINUS
-   &kp BSLH  &hm LCTRL SEMI &kp Q       &kp J       &kp K        &kp X   &kp B &kp M         &kp W       &kp V       &hm RCTRL Z  &kp FSLH
-                                         &kp GRAVE &mo LOWER &kp SPACE   &kp RET &mo RAISE &kp BSPC
+   &kp TAB   &kp SQT        &kp COMMA   &kp DOT     &kp P        &kp Y    &kp F &kp G         &kp C       &kp R       &kp L        &kp EQUAL
+   &kp ESC   &kp A          &hm LALT O  &hm LGUI E  &hm LSHIFT U &kp I    &kp D &hm RSHIFT H  &hm RGUI T  &hm RALT N  &kp S        &kp MINUS
+   &kp BSLH  &hm LCTRL SEMI &kp Q       &kp J       &kp K        &kp X    &kp B &kp M         &kp W       &kp V       &hm RCTRL Z  &kp FSLH
+                                        &kp GRAVE &mo LOWER &kp SPC       &kp RET &mo RAISE &kp BSPC
                         >;
                 };
 
-// QWERTY/GAMING
-                gaming_layer {
+                qwerty_layer {
+// +------+----+----+----+----+----+             +----+----+----+----+----+------+
+// | TAB  | q  | w  | e  | r  | t  |             | y  | u  | i  | o  | p  |QWERTY|
+// +------+----+----+----+----+----+             +----+----+----+----+----+------+
+// | ESC  | a  | s  | d  | f  | g  |             | h  | j  | k  | l  | '  | RCTL |
+// +------+----+----+----+----+----+             +----+----+----+----+----+------+
+// |LSHFT | z  | x  | c  | v  | b  |             | n  | m  | ,  | .  | /  |RSHFT |
+// +------+----+----+----+----+----+----+   +----+----+----+----+----+----+------+
+//                       |LCTL|LALT|SPC |   |ENT |RALT|BSPC|
+//                       +----+----+----+   +----+----+----+
                         label = "qwerty";
                         bindings = <
-   &kp TAB   &kp Q &kp W &kp E &kp R &kp T    &kp Y &kp U &kp I    &kp O   &kp P    &tog GAMING
+   &kp TAB   &kp Q &kp W &kp E &kp R &kp T    &kp Y &kp U &kp I    &kp O   &kp P    &tog QWERTY
    &kp ESC   &kp A &kp S &kp D &kp F &kp G    &kp H &kp J &kp K    &kp L   &kp QUOT &kp RCTL
-   &kp LSHFT &kp Z &kp X &kp C &kp V &kp B    &kp N &kp M &kp CMMA &kp DOT &kp FSLH &kp RSFT
+   &kp LSHFT &kp Z &kp X &kp C &kp V &kp B    &kp N &kp M &kp CMMA &kp DOT &kp FSLH &kp RSHFT
                  &kp LCTL &kp LALT &kp SPC    &kp RET &kp RALT &kp BSPC
                         >;
                 };
 
                 lower_layer {
+// +------+----+----+----+----+----+             +----+----+----+----+----+------+
+// |      | 1  | 2  | 3  | 4  | 5  |             | 6  | 7  | 8  | 9  | 0  |      |
+// +------+----+----+----+----+----+             +----+----+----+----+----+------+
+// |      | !  | @  | #  | $  | %  |             | ^  | &  | *  | (  | )  |      |
+// +------+----+----+----+----+----+             +----+----+----+----+----+------+
+// |      | ~  | /  | `  | +  | =  |             | |  | [  | ]  | {  | }  |      |
+// +------+----+----+----+----+----+----+   +----+----+----+----+----+----+------+
+//                       | `  |LWR |SPC |   |ENT |RSE |BSPC|
+//                       +----+----+----+   +----+----+----+
                         label = "lower";
-// -----------------------------------------------------------------------------------------
-// |      |  1  |  2  |  3  |  4  |  5  |   |  6  |  7  |  8  |  9  |  0  |      |
-// |  TAB |  !  |  @  |  #  |  $  |  %  |   |  ^  |  &  |  *  |  (  |  )  |     |
-// |      |  ~  |  /  |  `  |  +  |  =  |   | "|" |  [  |  ]  |  {  |  }  |     |
-//                    |  `  | LWR | SPC |   | ENT | RSE  | BKSP |
                         bindings = <
-   &trans    &kp N1    &kp N2   &kp N3    &kp N4   &kp N5         &kp N6    &kp N7    &kp N8          &kp N9   &kp N0   &trans
-   &trans    &kp EXCL  &kp AT   &kp HASH  &kp DLLR &kp PRCNT      &kp CARET &kp AMPS  &kp KP_MULTIPLY &kp LPAR &kp RPAR &trans
-   &trans    &kp TILDE &kp FSLH &kp GRAVE &kp PLUS &kp EQUAL      &kp PIPE  &kp LBKT  &kp RBKT        &kp LBRC &kp RBRC &trans
-                               &kp GRAVE &mo LOWER &kp SPACE      &kp RET &none &kp BSPC
+   &none  &kp N1    &kp N2   &kp N3    &kp N4   &kp N5         &kp N6    &kp N7    &kp N8          &kp N9   &kp N0   &none
+   &none  &kp EXCL  &kp AT   &kp HASH  &kp DLLR &kp PRCNT      &kp CARET &kp AMPS  &kp KP_MULTIPLY &kp LPAR &kp RPAR &none
+   &none  &kp TILDE &kp FSLH &kp GRAVE &kp PLUS &kp EQUAL      &kp PIPE  &kp LBKT  &kp RBKT        &kp LBRC &kp RBRC &none
+                                &none &mo LOWER &kp SPACE      &kp RET &mo RAISE &kp BSPC
                         >;
                 };
 
                 raise_layer {
+// +------+----+----+----+----+----+             +----+----+----+----+----+------+
+// |      | 1  | 2  | 3  | 4  | 5  |             | 6  | 7  | 8  | 9  | 0  |      |
+// +------+----+----+----+----+----+             +----+----+----+----+----+------+
+// | CAPS |    |    |    |    |    |             |    | ◄  | ▼  | ▲  | ▶  |      |
+// +------+----+----+----+----+----+             +----+----+----+----+----+------+
+// |  F1  | F2 | F3 | F4 | F6 | F5 |             | F7 | F8 | F9 |F10 |F11 | F12  |
+// +------+----+----+----+----+----+----+   +----+----+----+----+----+----+------+
+//                       | `  |LWR |SPC |   |ENT |RSE |QWRT|
+//                       +----+----+----+   +----+----+----+
                         label = "raise";
-// -----------------------------------------------------------------------------------------
-// |      |  1  |  2  |  3  |  4  |  5  |   |  6  |  7  |  8  |  9  |  0  |      |
-// | BTCLR| BT1 | BT2 | BT3 | BT4 | BT5 |   |     | LFT | DWN |  UP | RGT |     |
-// | F1   | F2  |  F3 |  F4 |  F5 | F6  |   | F7  |  F8 | F9  | F10 | F11 | F12 |
-//                    |  `  | LWR | SPC |   | ENT | RSE  | GMG |
                         bindings = <
-   &trans     &kp N1       &kp N2       &kp N3       &kp N4       &kp N5         &kp N6   &kp N7   &kp N8 &kp N9    &kp N0  &trans
-   &bt BT_CLR &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4   &trans   &kp LEFT &kp DOWN &kp UP &kp RIGHT &trans
-   &kp F1     &kp F2       &kp F3       &kp F4       &kp F5       &kp F6         &kp F7   &kp F8   &kp F9 &kp F10   &kp F11 &kp F12
-                               &kp GRAVE &none &kp SPACE      &kp RET &mo RAISE  &tog GAMING
+   &none    &kp N1  &kp N2  &kp N3  &kp N4   &kp N5     &kp N6   &kp N7   &kp N8   &kp N9   &kp N0    &none
+   &kp CAPS &none   &none   &none   &none    &none      &none    &kp LEFT &kp DOWN &kp UP   &kp RIGHT &none
+   &kp F1   &kp F2  &kp F3  &kp F4  &kp F5   &kp F6     &kp F7   &kp F8   &kp F9   &kp F10  &kp F11   &kp F12
+                          &none &mo LOWER &kp SPACE     &kp RET &mo RAISE  &tog QWERTY
+                        >;
+                };
+
+                adjust_layer {
+// +------+----+----+----+----+----+             +----+----+----+----+----+------+
+// |      |    |    |    |    |    |             |    |    |    |    |    |      |
+// +------+----+----+----+----+----+             +----+----+----+----+----+------+
+// |BT CLR|BT1 |BT2 |BT3 |BT4 |BT5 |             |    |    |    |    |    |      |
+// +------+----+----+----+----+----+             +----+----+----+----+----+------+
+// |      |    |    |    |    |    |             |    |    |    |    |    |      |
+// +------+----+----+----+----+----+----+   +----+----+----+----+----+----+------+
+//                       |    |LWR |    |   |    |RSE |    |
+//                       +----+----+----+   +----+----+----+
+                        label = "adjust";
+                        bindings = <
+   &none      &none        &none        &none        &none        &none          &none  &none  &none  &none  &none  &none
+   &bt BT_CLR &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4   &none  &none  &none  &none  &none  &none
+   &none      &none        &none        &none        &none        &none          &none  &none  &none  &none  &none  &none
+                                                     &none &trans &none          &none &trans  &none
                         >;
                 };
         };
